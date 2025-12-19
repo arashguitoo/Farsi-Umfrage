@@ -6,8 +6,6 @@
     <title>نظرسنجی زنده | Live-Umfrage</title>
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script data-goatcounter="https://aguitoo.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <style>
         :root {
             --primary: #6366f1;
@@ -23,11 +21,7 @@
             --text-muted: #94a3b8;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Vazirmatn', sans-serif;
@@ -37,28 +31,16 @@
             color: var(--text);
         }
 
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
+        .container { max-width: 800px; margin: 0 auto; padding: 20px; }
 
-        /* Screens */
-        .screen {
-            display: none;
-            animation: fadeIn 0.5s ease;
-        }
-
-        .screen.active {
-            display: block;
-        }
+        .screen { display: none; animation: fadeIn 0.5s ease; }
+        .screen.active { display: block; }
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Welcome Screen */
         .welcome-card {
             background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
             border-radius: 24px;
@@ -67,22 +49,9 @@
             margin-top: 30px;
         }
 
-        .welcome-icon {
-            font-size: 4rem;
-            margin-bottom: 20px;
-        }
-
-        .welcome-title {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-
-        .welcome-subtitle {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            margin-bottom: 30px;
-        }
+        .welcome-icon { font-size: 4rem; margin-bottom: 20px; }
+        .welcome-title { font-size: 2rem; font-weight: 700; margin-bottom: 10px; }
+        .welcome-subtitle { font-size: 1.1rem; opacity: 0.9; margin-bottom: 30px; }
 
         .role-buttons {
             display: flex;
@@ -107,23 +76,15 @@
             gap: 10px;
         }
 
-        .role-btn.host {
-            background: white;
-            color: var(--primary);
-        }
-
+        .role-btn.host { background: white; color: var(--primary); }
         .role-btn.player {
             background: rgba(255,255,255,0.15);
             color: white;
             border: 2px solid rgba(255,255,255,0.3);
         }
+        .role-btn:hover { transform: scale(1.03); }
 
-        .role-btn:hover {
-            transform: scale(1.03);
-        }
-
-        /* Join Screen */
-        .join-card {
+        .join-card, .lobby-card, .waiting-card, .question-card-wrapper, .results-card {
             background: var(--card);
             border-radius: 24px;
             padding: 35px;
@@ -131,12 +92,7 @@
             margin-top: 30px;
         }
 
-        .join-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 25px;
-            color: var(--accent);
-        }
+        .join-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 25px; color: var(--accent); }
 
         .code-input-container {
             display: flex;
@@ -159,11 +115,7 @@
             font-family: 'Vazirmatn', sans-serif;
             text-transform: uppercase;
         }
-
-        .code-input:focus {
-            outline: none;
-            border-color: var(--primary);
-        }
+        .code-input:focus { outline: none; border-color: var(--primary); }
 
         .name-input {
             width: 100%;
@@ -178,13 +130,9 @@
             text-align: center;
             margin-bottom: 20px;
         }
+        .name-input:focus { outline: none; border-color: var(--primary); }
 
-        .name-input:focus {
-            outline: none;
-            border-color: var(--primary);
-        }
-
-        .join-btn {
+        .btn {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
             border: none;
@@ -196,41 +144,19 @@
             cursor: pointer;
             transition: all 0.3s;
         }
-
-        .join-btn:hover {
-            transform: scale(1.05);
-        }
-
-        .join-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
+        .btn:hover { transform: scale(1.05); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
         .back-link {
             color: var(--text-muted);
             margin-top: 20px;
             cursor: pointer;
             font-size: 0.95rem;
+            display: inline-block;
         }
+        .back-link:hover { color: var(--text); }
 
-        .back-link:hover {
-            color: var(--text);
-        }
-
-        .error-msg {
-            color: var(--error);
-            margin-top: 15px;
-            font-size: 0.95rem;
-        }
-
-        /* Host Lobby */
-        .lobby-card {
-            background: var(--card);
-            border-radius: 24px;
-            padding: 35px;
-            text-align: center;
-            margin-top: 20px;
-        }
+        .error-msg { color: var(--error); margin-top: 15px; font-size: 0.95rem; }
 
         .game-code-display {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
@@ -238,35 +164,12 @@
             border-radius: 16px;
             margin-bottom: 25px;
         }
+        .game-code-label { font-size: 1rem; opacity: 0.9; margin-bottom: 10px; }
+        .game-code { font-size: 3.5rem; font-weight: 700; letter-spacing: 12px; direction: ltr; }
 
-        .game-code-label {
-            font-size: 1rem;
-            opacity: 0.9;
-            margin-bottom: 10px;
-        }
-
-        .game-code {
-            font-size: 3.5rem;
-            font-weight: 700;
-            letter-spacing: 12px;
-            direction: ltr;
-        }
-
-        .players-section {
-            margin: 25px 0;
-        }
-
-        .players-title {
-            font-size: 1.1rem;
-            color: var(--accent);
-            margin-bottom: 15px;
-        }
-
-        .players-count {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--success);
-        }
+        .players-section { margin: 25px 0; }
+        .players-title { font-size: 1.1rem; color: var(--accent); margin-bottom: 15px; }
+        .players-count { font-size: 2.5rem; font-weight: 700; color: var(--success); }
 
         .players-list {
             display: flex;
@@ -298,49 +201,17 @@
             transition: all 0.3s;
             margin-top: 20px;
         }
+        .start-btn:hover { transform: scale(1.05); }
+        .start-btn:disabled { background: var(--card-light); cursor: not-allowed; transform: none; }
 
-        .start-btn:hover {
-            transform: scale(1.05);
-        }
-
-        .start-btn:disabled {
-            background: var(--card-light);
-            cursor: not-allowed;
-        }
-
-        /* Waiting Screen (Player) */
-        .waiting-card {
-            background: var(--card);
-            border-radius: 24px;
-            padding: 40px;
-            text-align: center;
-            margin-top: 30px;
-        }
-
-        .waiting-icon {
-            font-size: 4rem;
-            margin-bottom: 20px;
-            animation: pulse 2s infinite;
-        }
-
+        .waiting-icon { font-size: 4rem; margin-bottom: 20px; animation: pulse 2s infinite; }
         @keyframes pulse {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.1); }
         }
+        .waiting-text { font-size: 1.3rem; color: var(--text-muted); }
+        .player-name-display { font-size: 1.5rem; font-weight: 600; color: var(--accent); margin-top: 15px; }
 
-        .waiting-text {
-            font-size: 1.3rem;
-            color: var(--text-muted);
-        }
-
-        .player-name-display {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--accent);
-            margin-top: 15px;
-        }
-
-        /* Question Screen */
         .question-header {
             background: var(--card);
             border-radius: 16px;
@@ -350,18 +221,7 @@
             justify-content: space-between;
             align-items: center;
         }
-
-        .question-progress {
-            font-size: 1rem;
-            color: var(--text-muted);
-        }
-
-        .question-timer {
-            background: var(--primary);
-            padding: 8px 20px;
-            border-radius: 20px;
-            font-weight: 600;
-        }
+        .question-progress { font-size: 1rem; color: var(--text-muted); }
 
         .question-card {
             background: var(--card);
@@ -393,50 +253,22 @@
             transition: all 0.3s;
             text-align: center;
         }
+        .option-btn:hover:not(.disabled) { border-color: var(--primary); transform: scale(1.02); }
+        .option-btn.selected { border-color: var(--primary); background: rgba(99, 102, 241, 0.2); }
+        .option-btn.disabled { cursor: default; opacity: 0.7; }
+        .option-icon { font-size: 2rem; margin-bottom: 10px; }
+        .option-text { font-size: 1rem; line-height: 1.6; }
 
-        .option-btn:hover:not(.disabled) {
-            border-color: var(--primary);
-            transform: scale(1.02);
-        }
-
-        .option-btn.selected {
-            border-color: var(--primary);
-            background: rgba(99, 102, 241, 0.2);
-        }
-
-        .option-btn.disabled {
-            cursor: not-allowed;
-            opacity: 0.7;
-        }
-
-        .option-icon {
-            font-size: 2rem;
-            margin-bottom: 10px;
-        }
-
-        .option-text {
-            font-size: 1rem;
-            line-height: 1.6;
-        }
-
-        /* Stats Display */
         .stats-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(15, 23, 42, 0.95);
-            display: flex;
+            display: none;
             align-items: center;
             justify-content: center;
             z-index: 100;
-            display: none;
         }
-
-        .stats-overlay.show {
-            display: flex;
-        }
+        .stats-overlay.show { display: flex; }
 
         .stats-card {
             background: var(--card);
@@ -447,37 +279,11 @@
             text-align: center;
             animation: fadeIn 0.5s ease;
         }
+        .stats-title { font-size: 1.3rem; color: var(--accent); margin-bottom: 25px; }
 
-        .stats-title {
-            font-size: 1.3rem;
-            color: var(--accent);
-            margin-bottom: 25px;
-        }
-
-        .stats-bars {
-            margin-bottom: 25px;
-        }
-
-        .stat-bar-item {
-            margin-bottom: 15px;
-            text-align: right;
-        }
-
-        .stat-bar-label {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-            font-size: 0.95rem;
-        }
-
-        .stat-bar-container {
-            background: var(--card-light);
-            border-radius: 10px;
-            height: 35px;
-            overflow: hidden;
-            position: relative;
-        }
-
+        .stat-bar-item { margin-bottom: 15px; text-align: right; }
+        .stat-bar-label { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.95rem; }
+        .stat-bar-container { background: var(--card-light); border-radius: 10px; height: 35px; overflow: hidden; }
         .stat-bar {
             height: 100%;
             border-radius: 10px;
@@ -488,37 +294,33 @@
             padding-right: 10px;
             font-weight: 600;
             font-size: 0.9rem;
+            min-width: 40px;
         }
-
         .stat-bar.color-0 { background: linear-gradient(90deg, #ef4444, #f87171); }
         .stat-bar.color-1 { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
         .stat-bar.color-2 { background: linear-gradient(90deg, #10b981, #34d399); }
         .stat-bar.color-3 { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
 
-        .stats-next-btn {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        .host-controls {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .host-badge { background: var(--accent); color: var(--bg); padding: 5px 15px; border-radius: 20px; font-weight: 600; font-size: 0.85rem; }
+        .responses-count { color: var(--success); font-weight: 600; }
+        .show-stats-btn {
+            background: var(--primary);
             color: white;
             border: none;
-            padding: 15px 40px;
-            border-radius: 30px;
+            padding: 10px 20px;
+            border-radius: 20px;
             font-family: 'Vazirmatn', sans-serif;
-            font-size: 1.1rem;
-            font-weight: 600;
+            font-size: 0.9rem;
             cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .stats-next-btn:hover {
-            transform: scale(1.05);
-        }
-
-        /* Final Results */
-        .results-card {
-            background: var(--card);
-            border-radius: 24px;
-            padding: 35px;
-            text-align: center;
-            margin-top: 20px;
         }
 
         .results-title {
@@ -530,68 +332,18 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
+        .results-subtitle { color: var(--text-muted); margin-bottom: 30px; }
 
-        .results-subtitle {
-            color: var(--text-muted);
-            margin-bottom: 30px;
-        }
+        .personality-results { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 30px; }
+        .personality-card { background: var(--card-light); border-radius: 16px; padding: 20px; }
+        .personality-icon { font-size: 2.5rem; margin-bottom: 10px; }
+        .personality-name { font-weight: 600; margin-bottom: 5px; }
+        .personality-count { color: var(--accent); font-size: 1.5rem; font-weight: 700; }
 
-        .personality-results {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-
-        .personality-card {
-            background: var(--card-light);
-            border-radius: 16px;
-            padding: 20px;
-        }
-
-        .personality-icon {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-        }
-
-        .personality-name {
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-
-        .personality-count {
-            color: var(--accent);
-            font-size: 1.5rem;
-            font-weight: 700;
-        }
-
-        .vocab-recap {
-            background: var(--card-light);
-            border-radius: 16px;
-            padding: 20px;
-            margin-top: 25px;
-            text-align: right;
-        }
-
-        .vocab-recap-title {
-            color: var(--accent);
-            font-weight: 600;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-
-        .vocab-recap-list {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-        }
-
-        .vocab-recap-item {
-            background: var(--bg);
-            padding: 10px;
-            border-radius: 8px;
-            font-size: 0.9rem;
-        }
+        .vocab-recap { background: var(--card-light); border-radius: 16px; padding: 20px; margin-top: 25px; text-align: right; }
+        .vocab-recap-title { color: var(--accent); font-weight: 600; margin-bottom: 15px; text-align: center; }
+        .vocab-recap-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .vocab-recap-item { background: var(--bg); padding: 10px; border-radius: 8px; font-size: 0.9rem; }
 
         .restart-btn {
             background: var(--card-light);
@@ -606,67 +358,15 @@
             transition: all 0.3s;
             margin-top: 25px;
         }
+        .restart-btn:hover { background: var(--primary); }
 
-        .restart-btn:hover {
-            background: var(--primary);
-        }
+        .loading-msg { color: var(--accent); font-size: 1rem; margin-top: 20px; }
 
-        /* Responsive */
         @media (max-width: 600px) {
-            .options-grid {
-                grid-template-columns: 1fr;
-            }
-            .game-code {
-                font-size: 2.5rem;
-                letter-spacing: 8px;
-            }
-            .code-input {
-                width: 50px;
-                height: 60px;
-                font-size: 1.5rem;
-            }
-            .personality-results {
-                grid-template-columns: 1fr;
-            }
-            .vocab-recap-list {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Host Controls */
-        .host-controls {
-            background: var(--card);
-            border-radius: 16px;
-            padding: 15px;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .host-badge {
-            background: var(--accent);
-            color: var(--bg);
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 0.85rem;
-        }
-
-        .responses-count {
-            color: var(--success);
-            font-weight: 600;
-        }
-
-        .show-stats-btn {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 20px;
-            font-family: 'Vazirmatn', sans-serif;
-            font-size: 0.9rem;
-            cursor: pointer;
+            .options-grid { grid-template-columns: 1fr; }
+            .game-code { font-size: 2.5rem; letter-spacing: 8px; }
+            .code-input { width: 50px; height: 60px; font-size: 1.5rem; }
+            .personality-results, .vocab-recap-list { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -680,37 +380,36 @@
                 <p class="welcome-subtitle">Live-Meinungsumfrage | شخصیت شغلی</p>
                 
                 <div class="role-buttons">
-                    <button class="role-btn host" onclick="showHostSetup()">
+                    <button class="role-btn host" id="hostBtn">
                         👨‍🏫 میزبان | Moderator
                     </button>
-                    <button class="role-btn player" onclick="showJoinScreen()">
+                    <button class="role-btn player" id="playerBtn">
                         🎮 شرکت‌کننده | Teilnehmer
                     </button>
                 </div>
+                <p class="loading-msg" id="loadingMsg">در حال بارگذاری...</p>
             </div>
         </div>
 
-        <!-- Join Screen (Player) -->
+        <!-- Join Screen -->
         <div id="joinScreen" class="screen">
             <div class="join-card">
                 <h2 class="join-title">🎮 وارد شوید | Beitreten</h2>
-                
                 <p style="color: var(--text-muted); margin-bottom: 20px;">کد بازی را وارد کنید</p>
                 
                 <div class="code-input-container">
-                    <input type="text" class="code-input" maxlength="1" id="code1" oninput="moveToNext(this, 'code2')">
-                    <input type="text" class="code-input" maxlength="1" id="code2" oninput="moveToNext(this, 'code3')">
-                    <input type="text" class="code-input" maxlength="1" id="code3" oninput="moveToNext(this, 'code4')">
-                    <input type="text" class="code-input" maxlength="1" id="code4" oninput="moveToNext(this, null)">
+                    <input type="text" class="code-input" maxlength="1" id="code1">
+                    <input type="text" class="code-input" maxlength="1" id="code2">
+                    <input type="text" class="code-input" maxlength="1" id="code3">
+                    <input type="text" class="code-input" maxlength="1" id="code4">
                 </div>
                 
                 <input type="text" class="name-input" id="playerName" placeholder="نام شما / Ihr Name">
                 
-                <button class="join-btn" onclick="joinGame()">ورود | Beitreten</button>
+                <button class="btn" id="joinBtn">ورود | Beitreten</button>
                 
                 <div class="error-msg" id="joinError"></div>
-                
-                <p class="back-link" onclick="showWelcome()">← بازگشت</p>
+                <p class="back-link" id="backToWelcome">← بازگشت</p>
             </div>
         </div>
 
@@ -728,7 +427,7 @@
                     <div class="players-list" id="playersList"></div>
                 </div>
                 
-                <button class="start-btn" id="startGameBtn" onclick="startGame()" disabled>
+                <button class="start-btn" id="startGameBtn" disabled>
                     🚀 شروع نظرسنجی
                 </button>
             </div>
@@ -749,7 +448,7 @@
             <div class="host-controls" id="hostControls" style="display: none;">
                 <span class="host-badge">👨‍🏫 میزبان</span>
                 <span class="responses-count" id="responsesCount">۰ پاسخ</span>
-                <button class="show-stats-btn" onclick="showQuestionStats()">📊 نتایج</button>
+                <button class="show-stats-btn" id="showStatsBtn">📊 نتایج</button>
             </div>
             
             <div class="question-header">
@@ -765,9 +464,9 @@
         <!-- Stats Overlay -->
         <div class="stats-overlay" id="statsOverlay">
             <div class="stats-card">
-                <h3 class="stats-title" id="statsTitle">📊 نتایج این سؤال</h3>
+                <h3 class="stats-title">📊 نتایج این سؤال</h3>
                 <div class="stats-bars" id="statsBars"></div>
-                <button class="stats-next-btn" id="statsNextBtn" onclick="nextQuestion()">سؤال بعدی ←</button>
+                <button class="btn" id="statsNextBtn">سؤال بعدی ←</button>
             </div>
         </div>
 
@@ -776,35 +475,21 @@
             <div class="results-card">
                 <h2 class="results-title">🎉 نتایج نهایی</h2>
                 <p class="results-subtitle">Endergebnisse der Umfrage</p>
-                
                 <div class="personality-results" id="personalityResults"></div>
-                
                 <div class="vocab-recap">
                     <p class="vocab-recap-title">📚 واژگان یاد گرفته شده</p>
                     <div class="vocab-recap-list" id="vocabRecap"></div>
                 </div>
-                
-                <button class="restart-btn" onclick="location.reload()">🔄 بازی جدید</button>
+                <button class="restart-btn" id="restartBtn">🔄 بازی جدید</button>
             </div>
         </div>
     </div>
 
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    
     <script>
-        // Firebase Config
-        const firebaseConfig = {
-            apiKey: "AIzaSyBDChXlm34Kr7Gg0Dw458GiiwoLnWJAnxM",
-            authDomain: "lern-deutsch-arash.firebaseapp.com",
-            databaseURL: "https://lern-deutsch-arash-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "lern-deutsch-arash",
-            storageBucket: "lern-deutsch-arash.firebasestorage.app",
-            messagingSenderId: "845503292114",
-            appId: "1:845503292114:web:f76ab5fcde1e978d00c30b"
-        };
-
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
-
         // Survey Questions
         const questions = [
             { question: "صبح‌ها چگونه به سر کار می‌روید؟", options: [
@@ -939,6 +624,7 @@
         };
 
         // State
+        let db = null;
         let gameCode = '';
         let isHost = false;
         let playerId = '';
@@ -946,7 +632,7 @@
         let currentQuestion = 0;
         let gameRef = null;
 
-        // Utility Functions
+        // Utility
         function generateCode() {
             const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
             let code = '';
@@ -957,34 +643,51 @@
         }
 
         function toPersianNum(num) {
-            const persianDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
-            return num.toString().split('').map(d => persianDigits[parseInt(d)] || d).join('');
+            const digits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+            return num.toString().split('').map(d => digits[parseInt(d)] || d).join('');
         }
 
-        function showScreen(screenId) {
+        function showScreen(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(screenId).classList.add('active');
+            document.getElementById(id).classList.add('active');
         }
 
-        function showWelcome() {
-            showScreen('welcomeScreen');
-        }
-
-        // Code Input Navigation
-        function moveToNext(current, nextId) {
-            current.value = current.value.toUpperCase();
-            if (current.value && nextId) {
-                document.getElementById(nextId).focus();
+        // Initialize Firebase
+        function initFirebase() {
+            try {
+                const config = {
+                    apiKey: "AIzaSyBDChXlm34Kr7Gg0Dw458GiiwoLnWJAnxM",
+                    authDomain: "lern-deutsch-arash.firebaseapp.com",
+                    databaseURL: "https://lern-deutsch-arash-default-rtdb.europe-west1.firebasedatabase.app",
+                    projectId: "lern-deutsch-arash",
+                    storageBucket: "lern-deutsch-arash.firebasestorage.app",
+                    messagingSenderId: "845503292114",
+                    appId: "1:845503292114:web:f76ab5fcde1e978d00c30b"
+                };
+                firebase.initializeApp(config);
+                db = firebase.database();
+                document.getElementById('loadingMsg').textContent = '✅ آماده!';
+                setTimeout(() => {
+                    document.getElementById('loadingMsg').style.display = 'none';
+                }, 1000);
+                return true;
+            } catch (e) {
+                console.error('Firebase error:', e);
+                document.getElementById('loadingMsg').textContent = '❌ خطا در اتصال';
+                return false;
             }
         }
 
         // Host Functions
         function showHostSetup() {
+            if (!db) {
+                alert('Firebase nicht verbunden!');
+                return;
+            }
             isHost = true;
             gameCode = generateCode();
-            
-            // Create game in Firebase
             gameRef = db.ref('surveys/' + gameCode);
+            
             gameRef.set({
                 status: 'lobby',
                 currentQuestion: 0,
@@ -996,14 +699,14 @@
             document.getElementById('gameCodeDisplay').textContent = gameCode;
             showScreen('hostLobby');
 
-            // Listen for players
-            gameRef.child('players').on('value', (snapshot) => {
-                const players = snapshot.val() || {};
-                const playerNames = Object.values(players);
-                document.getElementById('playersCount').textContent = playerNames.length;
-                document.getElementById('playersList').innerHTML = playerNames
-                    .map(name => `<span class="player-chip">${name}</span>`).join('');
-                document.getElementById('startGameBtn').disabled = playerNames.length < 1;
+            gameRef.child('players').on('value', (snap) => {
+                const players = snap.val() || {};
+                const names = Object.values(players);
+                document.getElementById('playersCount').textContent = names.length;
+                document.getElementById('playersList').innerHTML = names.map(n => 
+                    `<span class="player-chip">${n}</span>`
+                ).join('');
+                document.getElementById('startGameBtn').disabled = names.length < 1;
             });
         }
 
@@ -1012,12 +715,13 @@
             showQuestionHost(0);
         }
 
-        function showQuestionHost(qIndex) {
-            currentQuestion = qIndex;
-            const q = questions[qIndex];
+        function showQuestionHost(qIdx) {
+            currentQuestion = qIdx;
+            const q = questions[qIdx];
             
             document.getElementById('hostControls').style.display = 'flex';
-            document.getElementById('questionProgress').textContent = `سؤال ${toPersianNum(qIndex + 1)} از ${toPersianNum(questions.length)}`;
+            document.getElementById('questionProgress').textContent = 
+                `سؤال ${toPersianNum(qIdx + 1)} از ${toPersianNum(questions.length)}`;
             document.getElementById('questionText').textContent = q.question;
             
             document.getElementById('optionsGrid').innerHTML = q.options.map((opt, i) => `
@@ -1029,25 +733,24 @@
             
             showScreen('questionScreen');
 
-            // Listen for responses
-            gameRef.child('responses/' + qIndex).on('value', (snapshot) => {
-                const responses = snapshot.val() || {};
-                const count = Object.keys(responses).length;
-                document.getElementById('responsesCount').textContent = `${toPersianNum(count)} پاسخ`;
+            gameRef.child('responses/' + qIdx).on('value', (snap) => {
+                const resp = snap.val() || {};
+                document.getElementById('responsesCount').textContent = 
+                    `${toPersianNum(Object.keys(resp).length)} پاسخ`;
             });
         }
 
         function showQuestionStats() {
             const q = questions[currentQuestion];
             
-            gameRef.child('responses/' + currentQuestion).once('value', (snapshot) => {
-                const responses = snapshot.val() || {};
+            gameRef.child('responses/' + currentQuestion).once('value', (snap) => {
+                const resp = snap.val() || {};
                 const counts = [0, 0, 0, 0];
-                Object.values(responses).forEach(r => counts[r]++);
-                const total = Object.keys(responses).length || 1;
+                Object.values(resp).forEach(r => counts[r]++);
+                const total = Object.keys(resp).length || 1;
 
                 document.getElementById('statsBars').innerHTML = q.options.map((opt, i) => {
-                    const percent = Math.round(counts[i] / total * 100);
+                    const pct = Math.round(counts[i] / total * 100);
                     return `
                         <div class="stat-bar-item">
                             <div class="stat-bar-label">
@@ -1055,7 +758,7 @@
                                 <span>${toPersianNum(counts[i])} نفر</span>
                             </div>
                             <div class="stat-bar-container">
-                                <div class="stat-bar color-${i}" style="width: ${percent}%">${percent}%</div>
+                                <div class="stat-bar color-${i}" style="width: ${pct}%">${pct}%</div>
                             </div>
                         </div>
                     `;
@@ -1081,35 +784,28 @@
         }
 
         function showFinalResults() {
-            // Calculate personality distribution
-            gameRef.child('responses').once('value', (snapshot) => {
-                const allResponses = snapshot.val() || {};
+            gameRef.child('responses').once('value', (snap) => {
+                const allResp = snap.val() || {};
                 const typeCounts = { L: 0, E: 0, A: 0, C: 0, I: 0, S: 0 };
                 
-                // Count all personality types
-                Object.keys(allResponses).forEach(qIdx => {
-                    const qResponses = allResponses[qIdx];
-                    Object.values(qResponses).forEach(optIdx => {
+                Object.keys(allResp).forEach(qIdx => {
+                    Object.values(allResp[qIdx]).forEach(optIdx => {
                         const type = questions[qIdx].options[optIdx].type;
                         typeCounts[type]++;
                     });
                 });
 
-                // Display personality cards
                 const sorted = Object.entries(typeCounts).sort((a, b) => b[1] - a[1]);
-                document.getElementById('personalityResults').innerHTML = sorted.map(([type, count]) => `
+                document.getElementById('personalityResults').innerHTML = sorted.map(([t, c]) => `
                     <div class="personality-card">
-                        <div class="personality-icon">${personalities[type].icon}</div>
-                        <div class="personality-name">${personalities[type].name} | ${personalities[type].de}</div>
-                        <div class="personality-count">${toPersianNum(count)}</div>
+                        <div class="personality-icon">${personalities[t].icon}</div>
+                        <div class="personality-name">${personalities[t].name} | ${personalities[t].de}</div>
+                        <div class="personality-count">${toPersianNum(c)}</div>
                     </div>
                 `).join('');
 
-                // Vocabulary recap
                 document.getElementById('vocabRecap').innerHTML = questions.slice(0, 10).map(q => `
-                    <div class="vocab-recap-item">
-                        <strong>${q.vocab.fa}</strong> = ${q.vocab.de}
-                    </div>
+                    <div class="vocab-recap-item"><strong>${q.vocab.fa}</strong> = ${q.vocab.de}</div>
                 `).join('');
 
                 showScreen('resultsScreen');
@@ -1118,45 +814,43 @@
 
         // Player Functions
         function showJoinScreen() {
-            isHost = false;
             showScreen('joinScreen');
             document.getElementById('code1').focus();
         }
 
         function joinGame() {
-            const code = ['code1', 'code2', 'code3', 'code4']
-                .map(id => document.getElementById(id).value.toUpperCase()).join('');
+            const code = ['code1','code2','code3','code4'].map(id => 
+                document.getElementById(id).value.toUpperCase()
+            ).join('');
             const name = document.getElementById('playerName').value.trim();
             
             if (code.length !== 4) {
-                document.getElementById('joinError').textContent = 'لطفاً کد ۴ حرفی را وارد کنید';
+                document.getElementById('joinError').textContent = 'کد ۴ حرفی وارد کنید';
                 return;
             }
             if (!name) {
-                document.getElementById('joinError').textContent = 'لطفاً نام خود را وارد کنید';
+                document.getElementById('joinError').textContent = 'نام خود را وارد کنید';
                 return;
             }
 
             gameCode = code;
             playerName = name;
-            playerId = 'player_' + Date.now();
+            playerId = 'p_' + Date.now();
             gameRef = db.ref('surveys/' + gameCode);
 
-            // Check if game exists
-            gameRef.once('value', (snapshot) => {
-                if (!snapshot.exists()) {
-                    document.getElementById('joinError').textContent = 'بازی با این کد پیدا نشد';
+            gameRef.once('value', (snap) => {
+                if (!snap.exists()) {
+                    document.getElementById('joinError').textContent = 'بازی پیدا نشد!';
                     return;
                 }
 
-                // Add player
                 gameRef.child('players/' + playerId).set(name);
                 document.getElementById('playerNameDisplay').textContent = name;
                 showScreen('playerWaiting');
 
-                // Listen for game status
-                gameRef.on('value', (snapshot) => {
-                    const game = snapshot.val();
+                gameRef.on('value', (snap) => {
+                    const game = snap.val();
+                    if (!game) return;
                     if (game.status === 'playing') {
                         showQuestionPlayer(game.currentQuestion);
                     } else if (game.status === 'finished') {
@@ -1166,51 +860,54 @@
             });
         }
 
-        function showQuestionPlayer(qIndex) {
-            currentQuestion = qIndex;
-            const q = questions[qIndex];
+        function showQuestionPlayer(qIdx) {
+            currentQuestion = qIdx;
+            const q = questions[qIdx];
             
             document.getElementById('hostControls').style.display = 'none';
-            document.getElementById('questionProgress').textContent = `سؤال ${toPersianNum(qIndex + 1)} از ${toPersianNum(questions.length)}`;
+            document.getElementById('questionProgress').textContent = 
+                `سؤال ${toPersianNum(qIdx + 1)} از ${toPersianNum(questions.length)}`;
             document.getElementById('questionText').textContent = q.question;
             
-            // Check if already answered
-            gameRef.child('responses/' + qIndex + '/' + playerId).once('value', (snapshot) => {
-                const answered = snapshot.exists();
+            gameRef.child('responses/' + qIdx + '/' + playerId).once('value', (snap) => {
+                const answered = snap.exists();
                 
                 document.getElementById('optionsGrid').innerHTML = q.options.map((opt, i) => `
-                    <div class="option-btn ${answered ? 'disabled' : ''}" onclick="${answered ? '' : 'selectOption(' + i + ')'}">
+                    <div class="option-btn ${answered ? 'disabled' : ''}" data-idx="${i}">
                         <div class="option-icon">${opt.icon}</div>
                         <div class="option-text">${opt.text}</div>
                     </div>
                 `).join('');
+
+                if (!answered) {
+                    document.querySelectorAll('.option-btn').forEach(btn => {
+                        btn.addEventListener('click', function() {
+                            selectOption(parseInt(this.dataset.idx));
+                        });
+                    });
+                }
             });
             
             showScreen('questionScreen');
         }
 
-        function selectOption(optionIndex) {
-            // Save response
-            gameRef.child('responses/' + currentQuestion + '/' + playerId).set(optionIndex);
-            
-            // Mark as selected
+        function selectOption(idx) {
+            gameRef.child('responses/' + currentQuestion + '/' + playerId).set(idx);
             document.querySelectorAll('.option-btn').forEach((btn, i) => {
                 btn.classList.add('disabled');
-                if (i === optionIndex) btn.classList.add('selected');
+                if (i === idx) btn.classList.add('selected');
             });
         }
 
         function showPlayerResults() {
-            // Calculate player's personality
-            gameRef.child('responses').once('value', (snapshot) => {
-                const allResponses = snapshot.val() || {};
+            gameRef.child('responses').once('value', (snap) => {
+                const allResp = snap.val() || {};
                 const typeCounts = { L: 0, E: 0, A: 0, C: 0, I: 0, S: 0 };
                 
-                Object.keys(allResponses).forEach(qIdx => {
-                    const myAnswer = allResponses[qIdx][playerId];
-                    if (myAnswer !== undefined) {
-                        const type = questions[qIdx].options[myAnswer].type;
-                        typeCounts[type]++;
+                Object.keys(allResp).forEach(qIdx => {
+                    const myAns = allResp[qIdx][playerId];
+                    if (myAns !== undefined) {
+                        typeCounts[questions[qIdx].options[myAns].type]++;
                     }
                 });
 
@@ -1225,16 +922,52 @@
                 `;
 
                 document.getElementById('vocabRecap').innerHTML = questions.slice(0, 10).map(q => `
-                    <div class="vocab-recap-item">
-                        <strong>${q.vocab.fa}</strong> = ${q.vocab.de}
-                    </div>
+                    <div class="vocab-recap-item"><strong>${q.vocab.fa}</strong> = ${q.vocab.de}</div>
                 `).join('');
 
                 showScreen('resultsScreen');
             });
         }
 
-        // Cleanup on page unload
+        // Code Input Navigation
+        function setupCodeInputs() {
+            const inputs = ['code1', 'code2', 'code3', 'code4'];
+            inputs.forEach((id, i) => {
+                const el = document.getElementById(id);
+                el.addEventListener('input', function() {
+                    this.value = this.value.toUpperCase();
+                    if (this.value && i < 3) {
+                        document.getElementById(inputs[i + 1]).focus();
+                    }
+                });
+                el.addEventListener('keydown', function(e) {
+                    if (e.key === 'Backspace' && !this.value && i > 0) {
+                        document.getElementById(inputs[i - 1]).focus();
+                    }
+                });
+            });
+        }
+
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Firebase
+            initFirebase();
+            
+            // Setup code inputs
+            setupCodeInputs();
+
+            // Button handlers
+            document.getElementById('hostBtn').addEventListener('click', showHostSetup);
+            document.getElementById('playerBtn').addEventListener('click', showJoinScreen);
+            document.getElementById('backToWelcome').addEventListener('click', () => showScreen('welcomeScreen'));
+            document.getElementById('joinBtn').addEventListener('click', joinGame);
+            document.getElementById('startGameBtn').addEventListener('click', startGame);
+            document.getElementById('showStatsBtn').addEventListener('click', showQuestionStats);
+            document.getElementById('statsNextBtn').addEventListener('click', nextQuestion);
+            document.getElementById('restartBtn').addEventListener('click', () => location.reload());
+        });
+
+        // Cleanup
         window.addEventListener('beforeunload', () => {
             if (gameRef && playerId) {
                 gameRef.child('players/' + playerId).remove();
