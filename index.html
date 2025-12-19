@@ -4,459 +4,299 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>نظرسنجی زنده | Live-Umfrage</title>
-    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;700&display=swap" rel="stylesheet">
     <script data-goatcounter="https://aguitoo.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
     <style>
-        :root {
-            --primary: #6366f1;
-            --primary-light: #818cf8;
-            --secondary: #f472b6;
-            --accent: #fbbf24;
-            --success: #10b981;
-            --error: #ef4444;
-            --bg: #0f172a;
-            --card: #1e293b;
-            --card-light: #334155;
-            --text: #f1f5f9;
-            --text-muted: #94a3b8;
-        }
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
         body {
-            font-family: 'Vazirmatn', sans-serif;
-            background: var(--bg);
+            font-family: 'Vazirmatn', Arial, sans-serif;
+            background: #0f172a;
             min-height: 100vh;
             direction: rtl;
-            color: var(--text);
+            color: #f1f5f9;
         }
-
-        .container { max-width: 800px; margin: 0 auto; padding: 20px; }
-
-        .screen { display: none; animation: fadeIn 0.5s ease; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        
+        .screen { display: none; animation: fadeIn 0.4s ease; }
         .screen.active { display: block; }
-
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
+            from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
         }
-
+        
         .welcome-card {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            background: linear-gradient(135deg, #6366f1, #f472b6);
             border-radius: 24px;
             padding: 40px 30px;
             text-align: center;
             margin-top: 30px;
         }
-
         .welcome-icon { font-size: 4rem; margin-bottom: 20px; }
         .welcome-title { font-size: 2rem; font-weight: 700; margin-bottom: 10px; }
-        .welcome-subtitle { font-size: 1.1rem; opacity: 0.9; margin-bottom: 30px; }
-
-        .role-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            max-width: 300px;
-            margin: 0 auto;
+        .welcome-subtitle { font-size: 1rem; opacity: 0.9; margin-bottom: 30px; }
+        
+        .status-msg {
+            background: rgba(0,0,0,0.2);
+            padding: 10px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
         }
-
+        .status-msg.loading { color: #fbbf24; }
+        .status-msg.ready { color: #10b981; }
+        .status-msg.error { color: #ef4444; }
+        
+        .role-buttons { display: flex; flex-direction: column; gap: 15px; max-width: 300px; margin: 0 auto; }
+        
         .role-btn {
             padding: 18px 30px;
             border: none;
             border-radius: 16px;
-            font-family: 'Vazirmatn', sans-serif;
+            font-family: inherit;
             font-size: 1.1rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
         }
-
-        .role-btn.host { background: white; color: var(--primary); }
-        .role-btn.player {
-            background: rgba(255,255,255,0.15);
-            color: white;
-            border: 2px solid rgba(255,255,255,0.3);
-        }
-        .role-btn:hover { transform: scale(1.03); }
-
-        .join-card, .lobby-card, .waiting-card, .question-card-wrapper, .results-card {
-            background: var(--card);
+        .role-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .role-btn.host { background: white; color: #6366f1; }
+        .role-btn.player { background: rgba(255,255,255,0.2); color: white; border: 2px solid rgba(255,255,255,0.4); }
+        .role-btn:not(:disabled):hover { transform: scale(1.05); }
+        
+        .card {
+            background: #1e293b;
             border-radius: 24px;
             padding: 35px;
+            margin-top: 25px;
             text-align: center;
-            margin-top: 30px;
         }
-
-        .join-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 25px; color: var(--accent); }
-
-        .code-input-container {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 20px;
-            direction: ltr;
-        }
-
-        .code-input {
-            width: 60px;
-            height: 70px;
-            text-align: center;
-            font-size: 2rem;
-            font-weight: 700;
-            border: 3px solid var(--card-light);
-            border-radius: 12px;
-            background: var(--bg);
-            color: var(--text);
-            font-family: 'Vazirmatn', sans-serif;
-            text-transform: uppercase;
-        }
-        .code-input:focus { outline: none; border-color: var(--primary); }
-
-        .name-input {
-            width: 100%;
-            max-width: 300px;
-            padding: 15px 20px;
-            border: 2px solid var(--card-light);
-            border-radius: 12px;
-            background: var(--bg);
-            color: var(--text);
-            font-family: 'Vazirmatn', sans-serif;
-            font-size: 1.1rem;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .name-input:focus { outline: none; border-color: var(--primary); }
-
-        .btn {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            border: none;
-            padding: 15px 40px;
-            border-radius: 30px;
-            font-family: 'Vazirmatn', sans-serif;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .btn:hover { transform: scale(1.05); }
-        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-
-        .back-link {
-            color: var(--text-muted);
-            margin-top: 20px;
-            cursor: pointer;
-            font-size: 0.95rem;
-            display: inline-block;
-        }
-        .back-link:hover { color: var(--text); }
-
-        .error-msg { color: var(--error); margin-top: 15px; font-size: 0.95rem; }
-
-        .game-code-display {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        .card h2 { color: #fbbf24; margin-bottom: 20px; font-size: 1.4rem; }
+        
+        .code-display {
+            background: linear-gradient(135deg, #6366f1, #f472b6);
             padding: 25px;
             border-radius: 16px;
             margin-bottom: 25px;
         }
-        .game-code-label { font-size: 1rem; opacity: 0.9; margin-bottom: 10px; }
-        .game-code { font-size: 3.5rem; font-weight: 700; letter-spacing: 12px; direction: ltr; }
-
-        .players-section { margin: 25px 0; }
-        .players-title { font-size: 1.1rem; color: var(--accent); margin-bottom: 15px; }
-        .players-count { font-size: 2.5rem; font-weight: 700; color: var(--success); }
-
-        .players-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            justify-content: center;
-            margin-top: 15px;
-            max-height: 200px;
-            overflow-y: auto;
-        }
-
-        .player-chip {
-            background: var(--card-light);
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-        }
-
-        .start-btn {
-            background: var(--success);
+        .code-label { opacity: 0.9; margin-bottom: 10px; }
+        .code-value { font-size: 3rem; font-weight: 700; letter-spacing: 12px; direction: ltr; }
+        
+        .code-inputs { display: flex; justify-content: center; gap: 10px; margin: 20px 0; direction: ltr; }
+        .code-input {
+            width: 55px; height: 65px;
+            text-align: center;
+            font-size: 1.8rem; font-weight: 700;
+            border: 2px solid #334155;
+            border-radius: 10px;
+            background: #0f172a;
             color: white;
+            text-transform: uppercase;
+            font-family: inherit;
+        }
+        .code-input:focus { outline: none; border-color: #6366f1; }
+        
+        .text-input {
+            width: 100%; max-width: 280px;
+            padding: 15px;
+            border: 2px solid #334155;
+            border-radius: 12px;
+            background: #0f172a;
+            color: white;
+            font-size: 1.1rem;
+            text-align: center;
+            font-family: inherit;
+            margin: 15px 0;
+        }
+        .text-input:focus { outline: none; border-color: #6366f1; }
+        
+        .btn {
+            padding: 15px 35px;
             border: none;
-            padding: 18px 50px;
-            border-radius: 30px;
-            font-family: 'Vazirmatn', sans-serif;
-            font-size: 1.2rem;
+            border-radius: 25px;
+            font-family: inherit;
+            font-size: 1.1rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
-            margin-top: 20px;
+            margin: 5px;
         }
-        .start-btn:hover { transform: scale(1.05); }
-        .start-btn:disabled { background: var(--card-light); cursor: not-allowed; transform: none; }
-
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn:not(:disabled):hover { transform: scale(1.03); }
+        .btn-primary { background: linear-gradient(135deg, #6366f1, #f472b6); color: white; }
+        .btn-success { background: #10b981; color: white; }
+        .btn-secondary { background: #334155; color: white; }
+        
+        .players-count { font-size: 3rem; font-weight: 700; color: #10b981; margin: 15px 0; }
+        .players-list { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 15px 0; }
+        .player-chip { background: #334155; padding: 8px 16px; border-radius: 20px; font-size: 0.95rem; }
+        
         .waiting-icon { font-size: 4rem; margin-bottom: 20px; animation: pulse 2s infinite; }
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+        .waiting-name { color: #fbbf24; font-size: 1.3rem; margin-top: 15px; }
+        
+        .error-msg { color: #ef4444; margin-top: 15px; font-size: 0.95rem; }
+        .back-link { color: #94a3b8; cursor: pointer; margin-top: 20px; display: inline-block; }
+        .back-link:hover { color: white; }
+        
+        .question-progress { color: #94a3b8; margin-bottom: 15px; }
+        .question-text { font-size: 1.3rem; line-height: 1.9; margin-bottom: 25px; }
+        
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .option-btn {
+            background: #334155;
+            border: 3px solid transparent;
+            border-radius: 14px;
+            padding: 18px 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
         }
-        .waiting-text { font-size: 1.3rem; color: var(--text-muted); }
-        .player-name-display { font-size: 1.5rem; font-weight: 600; color: var(--accent); margin-top: 15px; }
-
-        .question-header {
-            background: var(--card);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 20px;
+        .option-btn:hover:not(.disabled) { border-color: #6366f1; transform: scale(1.02); }
+        .option-btn.selected { border-color: #6366f1; background: rgba(99,102,241,0.3); }
+        .option-btn.disabled { opacity: 0.7; cursor: default; }
+        .option-icon { font-size: 1.8rem; margin-bottom: 8px; }
+        .option-text { font-size: 0.95rem; line-height: 1.5; }
+        
+        .host-bar {
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 12px 18px;
+            margin-bottom: 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        .question-progress { font-size: 1rem; color: var(--text-muted); }
-
-        .question-card {
-            background: var(--card);
-            border-radius: 24px;
-            padding: 30px;
-            margin-bottom: 20px;
-        }
-
-        .question-text {
-            font-size: 1.4rem;
-            font-weight: 600;
-            line-height: 1.9;
-            margin-bottom: 25px;
-            text-align: center;
-        }
-
-        .options-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-        }
-
-        .option-btn {
-            background: var(--card-light);
-            border: 3px solid transparent;
-            border-radius: 16px;
-            padding: 20px;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-align: center;
-        }
-        .option-btn:hover:not(.disabled) { border-color: var(--primary); transform: scale(1.02); }
-        .option-btn.selected { border-color: var(--primary); background: rgba(99, 102, 241, 0.2); }
-        .option-btn.disabled { cursor: default; opacity: 0.7; }
-        .option-icon { font-size: 2rem; margin-bottom: 10px; }
-        .option-text { font-size: 1rem; line-height: 1.6; }
-
+        .host-badge { background: #fbbf24; color: #0f172a; padding: 4px 12px; border-radius: 15px; font-weight: 600; font-size: 0.85rem; }
+        .response-count { color: #10b981; font-weight: 600; }
+        
         .stats-overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(15, 23, 42, 0.95);
+            background: rgba(15,23,42,0.95);
             display: none;
             align-items: center;
             justify-content: center;
             z-index: 100;
+            padding: 20px;
         }
         .stats-overlay.show { display: flex; }
-
-        .stats-card {
-            background: var(--card);
-            border-radius: 24px;
-            padding: 35px;
-            max-width: 600px;
-            width: 90%;
-            text-align: center;
-            animation: fadeIn 0.5s ease;
-        }
-        .stats-title { font-size: 1.3rem; color: var(--accent); margin-bottom: 25px; }
-
-        .stat-bar-item { margin-bottom: 15px; text-align: right; }
-        .stat-bar-label { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.95rem; }
-        .stat-bar-container { background: var(--card-light); border-radius: 10px; height: 35px; overflow: hidden; }
+        .stats-card { background: #1e293b; border-radius: 20px; padding: 30px; max-width: 500px; width: 100%; }
+        .stats-title { color: #fbbf24; font-size: 1.2rem; margin-bottom: 20px; text-align: center; }
+        .stat-item { margin-bottom: 15px; }
+        .stat-label { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 0.9rem; }
+        .stat-bar-bg { background: #334155; border-radius: 8px; height: 30px; overflow: hidden; }
         .stat-bar {
             height: 100%;
-            border-radius: 10px;
-            transition: width 1s ease;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: flex-end;
             padding-right: 10px;
             font-weight: 600;
-            font-size: 0.9rem;
-            min-width: 40px;
+            font-size: 0.85rem;
+            min-width: 35px;
+            transition: width 0.8s ease;
         }
-        .stat-bar.color-0 { background: linear-gradient(90deg, #ef4444, #f87171); }
-        .stat-bar.color-1 { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
-        .stat-bar.color-2 { background: linear-gradient(90deg, #10b981, #34d399); }
-        .stat-bar.color-3 { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
-
-        .host-controls {
-            background: var(--card);
-            border-radius: 16px;
-            padding: 15px;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .host-badge { background: var(--accent); color: var(--bg); padding: 5px 15px; border-radius: 20px; font-weight: 600; font-size: 0.85rem; }
-        .responses-count { color: var(--success); font-weight: 600; }
-        .show-stats-btn {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 20px;
-            font-family: 'Vazirmatn', sans-serif;
-            font-size: 0.9rem;
-            cursor: pointer;
-        }
-
-        .results-title {
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .results-subtitle { color: var(--text-muted); margin-bottom: 30px; }
-
-        .personality-results { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 30px; }
-        .personality-card { background: var(--card-light); border-radius: 16px; padding: 20px; }
-        .personality-icon { font-size: 2.5rem; margin-bottom: 10px; }
-        .personality-name { font-weight: 600; margin-bottom: 5px; }
-        .personality-count { color: var(--accent); font-size: 1.5rem; font-weight: 700; }
-
-        .vocab-recap { background: var(--card-light); border-radius: 16px; padding: 20px; margin-top: 25px; text-align: right; }
-        .vocab-recap-title { color: var(--accent); font-weight: 600; margin-bottom: 15px; text-align: center; }
-        .vocab-recap-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-        .vocab-recap-item { background: var(--bg); padding: 10px; border-radius: 8px; font-size: 0.9rem; }
-
-        .restart-btn {
-            background: var(--card-light);
-            color: var(--text);
-            border: none;
-            padding: 15px 35px;
-            border-radius: 30px;
-            font-family: 'Vazirmatn', sans-serif;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            margin-top: 25px;
-        }
-        .restart-btn:hover { background: var(--primary); }
-
-        .loading-msg { color: var(--accent); font-size: 1rem; margin-top: 20px; }
-
-        @media (max-width: 600px) {
-            .options-grid { grid-template-columns: 1fr; }
-            .game-code { font-size: 2.5rem; letter-spacing: 8px; }
-            .code-input { width: 50px; height: 60px; font-size: 1.5rem; }
-            .personality-results, .vocab-recap-list { grid-template-columns: 1fr; }
+        .stat-bar.c0 { background: linear-gradient(90deg, #ef4444, #f87171); }
+        .stat-bar.c1 { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+        .stat-bar.c2 { background: linear-gradient(90deg, #10b981, #34d399); }
+        .stat-bar.c3 { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+        
+        .results-icon { font-size: 4rem; margin-bottom: 15px; }
+        .results-title { font-size: 1.6rem; background: linear-gradient(135deg, #6366f1, #f472b6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 5px; }
+        .results-subtitle { color: #94a3b8; margin-bottom: 25px; }
+        .personality-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 25px; }
+        .personality-item { background: #334155; border-radius: 14px; padding: 18px; }
+        .personality-item .icon { font-size: 2rem; margin-bottom: 8px; }
+        .personality-item .name { font-weight: 600; margin-bottom: 4px; }
+        .personality-item .count { color: #fbbf24; font-size: 1.4rem; font-weight: 700; }
+        
+        .vocab-box { background: #334155; border-radius: 14px; padding: 18px; margin-top: 20px; }
+        .vocab-title { color: #fbbf24; margin-bottom: 12px; }
+        .vocab-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .vocab-item { background: #0f172a; padding: 8px 12px; border-radius: 8px; font-size: 0.85rem; }
+        
+        @media (max-width: 500px) {
+            .options-grid, .personality-grid, .vocab-grid { grid-template-columns: 1fr; }
+            .code-value { font-size: 2.2rem; letter-spacing: 8px; }
+            .code-input { width: 48px; height: 58px; font-size: 1.5rem; }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Welcome Screen -->
+        <!-- Welcome -->
         <div id="welcomeScreen" class="screen active">
             <div class="welcome-card">
                 <div class="welcome-icon">📊</div>
                 <h1 class="welcome-title">نظرسنجی زنده</h1>
                 <p class="welcome-subtitle">Live-Meinungsumfrage | شخصیت شغلی</p>
                 
+                <div class="status-msg loading" id="statusMsg">⏳ در حال اتصال...</div>
+                
                 <div class="role-buttons">
-                    <button class="role-btn host" id="hostBtn">
-                        👨‍🏫 میزبان | Moderator
-                    </button>
-                    <button class="role-btn player" id="playerBtn">
-                        🎮 شرکت‌کننده | Teilnehmer
-                    </button>
+                    <button class="role-btn host" id="hostBtn" disabled>👨‍🏫 میزبان | Moderator</button>
+                    <button class="role-btn player" id="playerBtn" disabled>🎮 شرکت‌کننده | Teilnehmer</button>
                 </div>
-                <p class="loading-msg" id="loadingMsg">در حال بارگذاری...</p>
-            </div>
-        </div>
-
-        <!-- Join Screen -->
-        <div id="joinScreen" class="screen">
-            <div class="join-card">
-                <h2 class="join-title">🎮 وارد شوید | Beitreten</h2>
-                <p style="color: var(--text-muted); margin-bottom: 20px;">کد بازی را وارد کنید</p>
-                
-                <div class="code-input-container">
-                    <input type="text" class="code-input" maxlength="1" id="code1">
-                    <input type="text" class="code-input" maxlength="1" id="code2">
-                    <input type="text" class="code-input" maxlength="1" id="code3">
-                    <input type="text" class="code-input" maxlength="1" id="code4">
-                </div>
-                
-                <input type="text" class="name-input" id="playerName" placeholder="نام شما / Ihr Name">
-                
-                <button class="btn" id="joinBtn">ورود | Beitreten</button>
-                
-                <div class="error-msg" id="joinError"></div>
-                <p class="back-link" id="backToWelcome">← بازگشت</p>
             </div>
         </div>
 
         <!-- Host Lobby -->
         <div id="hostLobby" class="screen">
-            <div class="lobby-card">
-                <div class="game-code-display">
-                    <p class="game-code-label">کد بازی | Spielcode</p>
-                    <p class="game-code" id="gameCodeDisplay">----</p>
+            <div class="card">
+                <div class="code-display">
+                    <p class="code-label">کد بازی | Spielcode</p>
+                    <p class="code-value" id="gameCode">----</p>
                 </div>
-                
-                <div class="players-section">
-                    <p class="players-title">👥 شرکت‌کنندگان | Teilnehmer</p>
-                    <p class="players-count" id="playersCount">0</p>
-                    <div class="players-list" id="playersList"></div>
-                </div>
-                
-                <button class="start-btn" id="startGameBtn" disabled>
-                    🚀 شروع نظرسنجی
-                </button>
+                <h2>👥 شرکت‌کنندگان | Teilnehmer</h2>
+                <p class="players-count" id="playerCount">0</p>
+                <div class="players-list" id="playerList"></div>
+                <button class="btn btn-success" id="startBtn" disabled>🚀 شروع نظرسنجی</button>
+                <br><span class="back-link" id="hostBack">← بازگشت</span>
             </div>
         </div>
 
-        <!-- Player Waiting -->
-        <div id="playerWaiting" class="screen">
-            <div class="waiting-card">
+        <!-- Join -->
+        <div id="joinScreen" class="screen">
+            <div class="card">
+                <h2>🎮 وارد شوید | Beitreten</h2>
+                <p style="color: #94a3b8;">کد بازی را وارد کنید</p>
+                
+                <div class="code-inputs">
+                    <input type="text" class="code-input" maxlength="1" id="c1">
+                    <input type="text" class="code-input" maxlength="1" id="c2">
+                    <input type="text" class="code-input" maxlength="1" id="c3">
+                    <input type="text" class="code-input" maxlength="1" id="c4">
+                </div>
+                
+                <input type="text" class="text-input" id="playerName" placeholder="نام شما / Ihr Name">
+                
+                <button class="btn btn-primary" id="joinBtn">ورود | Beitreten</button>
+                <p class="error-msg" id="joinError"></p>
+                <span class="back-link" id="joinBack">← بازگشت</span>
+            </div>
+        </div>
+
+        <!-- Waiting -->
+        <div id="waitingScreen" class="screen">
+            <div class="card">
                 <div class="waiting-icon">⏳</div>
-                <p class="waiting-text">منتظر شروع بازی...</p>
-                <p class="waiting-text" style="font-size: 1rem;">Warten auf Spielstart...</p>
-                <p class="player-name-display" id="playerNameDisplay"></p>
+                <h2>منتظر شروع...</h2>
+                <p style="color: #94a3b8;">Warten auf Spielstart</p>
+                <p class="waiting-name" id="waitingName"></p>
             </div>
         </div>
 
-        <!-- Question Screen -->
+        <!-- Question -->
         <div id="questionScreen" class="screen">
-            <div class="host-controls" id="hostControls" style="display: none;">
+            <div class="host-bar" id="hostBar" style="display:none;">
                 <span class="host-badge">👨‍🏫 میزبان</span>
-                <span class="responses-count" id="responsesCount">۰ پاسخ</span>
-                <button class="show-stats-btn" id="showStatsBtn">📊 نتایج</button>
+                <span class="response-count" id="responseCount">۰ پاسخ</span>
+                <button class="btn btn-primary" id="showStatsBtn" style="padding:8px 16px; font-size:0.9rem;">📊 نتایج</button>
             </div>
-            
-            <div class="question-header">
-                <span class="question-progress" id="questionProgress">سؤال ۱ از ۲۰</span>
-            </div>
-            
-            <div class="question-card">
-                <p class="question-text" id="questionText">سؤال</p>
+            <div class="card">
+                <p class="question-progress" id="qProgress">سؤال ۱ از ۲۰</p>
+                <p class="question-text" id="qText">سؤال</p>
                 <div class="options-grid" id="optionsGrid"></div>
             </div>
         </div>
@@ -465,22 +305,23 @@
         <div class="stats-overlay" id="statsOverlay">
             <div class="stats-card">
                 <h3 class="stats-title">📊 نتایج این سؤال</h3>
-                <div class="stats-bars" id="statsBars"></div>
-                <button class="btn" id="statsNextBtn">سؤال بعدی ←</button>
+                <div id="statsBars"></div>
+                <button class="btn btn-primary" id="nextQBtn" style="margin-top:20px;">سؤال بعدی ←</button>
             </div>
         </div>
 
-        <!-- Final Results -->
+        <!-- Results -->
         <div id="resultsScreen" class="screen">
-            <div class="results-card">
-                <h2 class="results-title">🎉 نتایج نهایی</h2>
-                <p class="results-subtitle">Endergebnisse der Umfrage</p>
-                <div class="personality-results" id="personalityResults"></div>
-                <div class="vocab-recap">
-                    <p class="vocab-recap-title">📚 واژگان یاد گرفته شده</p>
-                    <div class="vocab-recap-list" id="vocabRecap"></div>
+            <div class="card">
+                <div class="results-icon">🎉</div>
+                <h2 class="results-title">نتایج نهایی</h2>
+                <p class="results-subtitle">Endergebnisse</p>
+                <div class="personality-grid" id="personalityGrid"></div>
+                <div class="vocab-box">
+                    <p class="vocab-title">📚 واژگان</p>
+                    <div class="vocab-grid" id="vocabGrid"></div>
                 </div>
-                <button class="restart-btn" id="restartBtn">🔄 بازی جدید</button>
+                <button class="btn btn-secondary" id="restartBtn" style="margin-top:20px;">🔄 بازی جدید</button>
             </div>
         </div>
     </div>
@@ -490,489 +331,423 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     
     <script>
-        // Survey Questions
+    (function() {
+        // ===== DATA =====
         const questions = [
-            { question: "صبح‌ها چگونه به سر کار می‌روید؟", options: [
-                { icon: "☀️", text: "با انرژی و خوشحال!", type: "E" },
-                { icon: "😴", text: "به سختی بیدار می‌شوم", type: "I" },
-                { icon: "🎧", text: "با موسیقی و قهوه", type: "C" },
-                { icon: "🏃", text: "عجله‌ای! دیر می‌رسم", type: "S" }
+            { q: "صبح‌ها چگونه به سر کار می‌روید؟", opts: [
+                { icon: "☀️", text: "با انرژی!", type: "E" },
+                { icon: "😴", text: "به سختی بیدار", type: "I" },
+                { icon: "🎧", text: "با موسیقی", type: "C" },
+                { icon: "🏃", text: "عجله‌ای!", type: "S" }
             ], vocab: { fa: "صبح", de: "Morgen" }},
-            { question: "در جلسات کاری چه نقشی دارید؟", options: [
-                { icon: "🎤", text: "رهبر بحث هستم", type: "L" },
-                { icon: "👂", text: "بیشتر گوش می‌دهم", type: "I" },
-                { icon: "📝", text: "یادداشت می‌کنم", type: "A" },
-                { icon: "💡", text: "ایده‌های جدید می‌دهم", type: "C" }
+            { q: "در جلسات کاری چه نقشی دارید؟", opts: [
+                { icon: "🎤", text: "رهبر بحث", type: "L" },
+                { icon: "👂", text: "شنونده", type: "I" },
+                { icon: "📝", text: "یادداشت‌نویس", type: "A" },
+                { icon: "💡", text: "ایده‌پرداز", type: "C" }
             ], vocab: { fa: "جلسه", de: "Meeting" }},
-            { question: "وقتی همکارتان مشکل دارد؟", options: [
-                { icon: "🤝", text: "فوراً کمک می‌کنم", type: "E" },
-                { icon: "🤔", text: "اگر بخواهد کمک می‌کنم", type: "I" },
+            { q: "وقتی همکارتان مشکل دارد؟", opts: [
+                { icon: "🤝", text: "فوراً کمک", type: "E" },
+                { icon: "🤔", text: "اگر بخواهد", type: "I" },
                 { icon: "📞", text: "به مدیر می‌گویم", type: "A" },
-                { icon: "💪", text: "یادش می‌دهم خودش حل کند", type: "L" }
+                { icon: "💪", text: "خودش حل کند", type: "L" }
             ], vocab: { fa: "همکار", de: "Kollege" }},
-            { question: "محیط کار ایده‌آل شما؟", options: [
+            { q: "محیط کار ایده‌آل شما؟", opts: [
                 { icon: "🏢", text: "دفتر شلوغ", type: "E" },
-                { icon: "🏠", text: "کار از خانه", type: "I" },
-                { icon: "☕", text: "کافه یا فضای مشترک", type: "C" },
-                { icon: "🌳", text: "جایی با طبیعت", type: "S" }
+                { icon: "🏠", text: "خانه", type: "I" },
+                { icon: "☕", text: "کافه", type: "C" },
+                { icon: "🌳", text: "طبیعت", type: "S" }
             ], vocab: { fa: "محیط کار", de: "Arbeitsumfeld" }},
-            { question: "چگونه تصمیم می‌گیرید؟", options: [
-                { icon: "🧠", text: "با تحلیل و منطق", type: "A" },
-                { icon: "❤️", text: "با احساس و شهود", type: "C" },
-                { icon: "👥", text: "با مشورت دیگران", type: "E" },
+            { q: "چگونه تصمیم می‌گیرید؟", opts: [
+                { icon: "🧠", text: "منطق", type: "A" },
+                { icon: "❤️", text: "احساس", type: "C" },
+                { icon: "👥", text: "مشورت", type: "E" },
                 { icon: "⚡", text: "سریع!", type: "S" }
             ], vocab: { fa: "تصمیم", de: "Entscheidung" }},
-            { question: "پاداش ایده‌آل برای شما؟", options: [
-                { icon: "💰", text: "پول و حقوق بالا", type: "A" },
-                { icon: "🏆", text: "تقدیر و احترام", type: "L" },
-                { icon: "🎉", text: "مرخصی بیشتر", type: "S" },
-                { icon: "📈", text: "ارتقای شغلی", type: "L" }
+            { q: "پاداش ایده‌آل؟", opts: [
+                { icon: "💰", text: "پول", type: "A" },
+                { icon: "🏆", text: "تقدیر", type: "L" },
+                { icon: "🎉", text: "مرخصی", type: "S" },
+                { icon: "📈", text: "ارتقا", type: "L" }
             ], vocab: { fa: "پاداش", de: "Belohnung" }},
-            { question: "وقتی کار زیاد است؟", options: [
-                { icon: "📋", text: "لیست و اولویت‌بندی", type: "A" },
-                { icon: "😰", text: "استرس می‌گیرم", type: "S" },
+            { q: "وقتی کار زیاد است؟", opts: [
+                { icon: "📋", text: "لیست می‌نویسم", type: "A" },
+                { icon: "😰", text: "استرس", type: "S" },
                 { icon: "☕", text: "اول استراحت", type: "I" },
-                { icon: "🦸", text: "همه را انجام می‌دهم!", type: "E" }
+                { icon: "🦸", text: "همه را انجام!", type: "E" }
             ], vocab: { fa: "استرس", de: "Stress" }},
-            { question: "رابطه با رئیس‌تان؟", options: [
-                { icon: "😊", text: "دوستانه و صمیمی", type: "E" },
-                { icon: "📏", text: "رسمی و حرفه‌ای", type: "A" },
-                { icon: "😬", text: "کمی ترسناک!", type: "I" },
-                { icon: "🤷", text: "من خودم رئیسم!", type: "L" }
+            { q: "رابطه با رئیس؟", opts: [
+                { icon: "😊", text: "صمیمی", type: "E" },
+                { icon: "📏", text: "رسمی", type: "A" },
+                { icon: "😬", text: "ترسناک!", type: "I" },
+                { icon: "🤷", text: "من رئیسم!", type: "L" }
             ], vocab: { fa: "رئیس", de: "Chef" }},
-            { question: "زمان استراحت ناهار؟", options: [
-                { icon: "👥", text: "با همکاران غذا", type: "E" },
-                { icon: "📱", text: "تنها و با گوشی", type: "I" },
+            { q: "استراحت ناهار؟", opts: [
+                { icon: "👥", text: "با همکاران", type: "E" },
+                { icon: "📱", text: "تنها", type: "I" },
                 { icon: "🚶", text: "پیاده‌روی", type: "S" },
                 { icon: "💻", text: "کار می‌کنم!", type: "A" }
             ], vocab: { fa: "استراحت", de: "Pause" }},
-            { question: "اگر اشتباه کنید؟", options: [
-                { icon: "🙋", text: "سریع اعتراف می‌کنم", type: "E" },
-                { icon: "🔧", text: "آرام حل می‌کنم", type: "I" },
-                { icon: "📊", text: "تحلیل می‌کنم چرا", type: "A" },
-                { icon: "😅", text: "امیدوارم کسی نفهمد!", type: "S" }
+            { q: "اگر اشتباه کنید؟", opts: [
+                { icon: "🙋", text: "اعتراف", type: "E" },
+                { icon: "🔧", text: "آرام حل", type: "I" },
+                { icon: "📊", text: "تحلیل چرا", type: "A" },
+                { icon: "😅", text: "کسی نفهمد!", type: "S" }
             ], vocab: { fa: "اشتباه", de: "Fehler" }},
-            { question: "چه پروژه‌ای دوست دارید؟", options: [
-                { icon: "🎨", text: "خلاقانه و هنری", type: "C" },
-                { icon: "📊", text: "تحلیلی با اعداد", type: "A" },
-                { icon: "👥", text: "گروهی و تیمی", type: "E" },
-                { icon: "🏃", text: "سریع و کوتاه", type: "S" }
+            { q: "چه پروژه‌ای؟", opts: [
+                { icon: "🎨", text: "خلاقانه", type: "C" },
+                { icon: "📊", text: "تحلیلی", type: "A" },
+                { icon: "👥", text: "تیمی", type: "E" },
+                { icon: "🏃", text: "سریع", type: "S" }
             ], vocab: { fa: "پروژه", de: "Projekt" }},
-            { question: "ساعت کاری ایده‌آل؟", options: [
-                { icon: "🌅", text: "صبح زود، زود تمام", type: "A" },
-                { icon: "🌙", text: "دیر شروع، دیر تمام", type: "C" },
+            { q: "ساعت کاری ایده‌آل؟", opts: [
+                { icon: "🌅", text: "صبح زود", type: "A" },
+                { icon: "🌙", text: "شب", type: "C" },
                 { icon: "🕐", text: "انعطاف‌پذیر", type: "I" },
-                { icon: "⏰", text: "۹ تا ۵ کلاسیک", type: "S" }
-            ], vocab: { fa: "ساعت کاری", de: "Arbeitszeit" }},
-            { question: "وقتی ایده‌ی جدید دارید؟", options: [
+                { icon: "⏰", text: "۹ تا ۵", type: "S" }
+            ], vocab: { fa: "ساعت", de: "Arbeitszeit" }},
+            { q: "ایده‌ی جدید دارید؟", opts: [
                 { icon: "📢", text: "به همه می‌گویم", type: "E" },
-                { icon: "📝", text: "اول می‌نویسم و فکر", type: "I" },
-                { icon: "🚀", text: "شروع به اجرا!", type: "L" },
-                { icon: "🤝", text: "با یک نفر مشورت", type: "C" }
+                { icon: "📝", text: "می‌نویسم", type: "I" },
+                { icon: "🚀", text: "اجرا!", type: "L" },
+                { icon: "🤝", text: "مشورت", type: "C" }
             ], vocab: { fa: "ایده", de: "Idee" }},
-            { question: "چه چیز ناراحتتان می‌کند؟", options: [
-                { icon: "🐌", text: "کار کند و بی‌هدف", type: "L" },
-                { icon: "😤", text: "همکاران بی‌احترام", type: "E" },
-                { icon: "📋", text: "قوانین بی‌منطق", type: "C" },
-                { icon: "⏰", text: "اضافه‌کاری زیاد", type: "S" }
+            { q: "چه چیز ناراحت؟", opts: [
+                { icon: "🐌", text: "کار کند", type: "L" },
+                { icon: "😤", text: "بی‌احترامی", type: "E" },
+                { icon: "📋", text: "قوانین بد", type: "C" },
+                { icon: "⏰", text: "اضافه‌کاری", type: "S" }
             ], vocab: { fa: "ناراحت", de: "verärgert" }},
-            { question: "پنج سال آینده؟", options: [
-                { icon: "👔", text: "مدیر تیم بزرگ", type: "L" },
-                { icon: "🌴", text: "بازنشسته در ساحل!", type: "S" },
-                { icon: "🎓", text: "یادگیری چیز جدید", type: "C" },
-                { icon: "💼", text: "همین‌جا ولی بهتر", type: "A" }
+            { q: "۵ سال آینده؟", opts: [
+                { icon: "👔", text: "مدیر", type: "L" },
+                { icon: "🌴", text: "بازنشسته!", type: "S" },
+                { icon: "🎓", text: "یادگیری", type: "C" },
+                { icon: "💼", text: "همین‌جا بهتر", type: "A" }
             ], vocab: { fa: "آینده", de: "Zukunft" }},
-            { question: "برخورد با انتقاد؟", options: [
-                { icon: "🙏", text: "تشکر و یادگیری", type: "A" },
-                { icon: "😢", text: "ناراحت می‌شوم", type: "I" },
-                { icon: "🤨", text: "بستگی به کی گفته", type: "E" },
-                { icon: "💪", text: "انگیزه می‌گیرم!", type: "L" }
+            { q: "برخورد با انتقاد؟", opts: [
+                { icon: "🙏", text: "تشکر", type: "A" },
+                { icon: "😢", text: "ناراحت", type: "I" },
+                { icon: "🤨", text: "بستگی دارد", type: "E" },
+                { icon: "💪", text: "انگیزه!", type: "L" }
             ], vocab: { fa: "انتقاد", de: "Kritik" }},
-            { question: "غذا در محل کار؟", options: [
-                { icon: "🥗", text: "سالاد سالم", type: "A" },
-                { icon: "🍕", text: "پیتزا با همکاران", type: "E" },
-                { icon: "☕", text: "فقط قهوه!", type: "C" },
-                { icon: "🍱", text: "غذای خانگی", type: "I" }
+            { q: "غذا در کار؟", opts: [
+                { icon: "🥗", text: "سالاد", type: "A" },
+                { icon: "🍕", text: "پیتزا تیمی", type: "E" },
+                { icon: "☕", text: "فقط قهوه", type: "C" },
+                { icon: "🍱", text: "خانگی", type: "I" }
             ], vocab: { fa: "غذا", de: "Essen" }},
-            { question: "اگر لاتاری ببرید؟", options: [
-                { icon: "🏃", text: "فوراً استعفا!", type: "S" },
-                { icon: "💼", text: "همان کار ادامه", type: "A" },
+            { q: "لاتاری ببرید؟", opts: [
+                { icon: "🏃", text: "استعفا!", type: "S" },
+                { icon: "💼", text: "ادامه کار", type: "A" },
                 { icon: "🏢", text: "شرکت خودم", type: "L" },
-                { icon: "🌍", text: "سفر و بعد فکر", type: "C" }
+                { icon: "🌍", text: "سفر", type: "C" }
             ], vocab: { fa: "لاتاری", de: "Lotterie" }},
-            { question: "موسیقی هنگام کار؟", options: [
-                { icon: "🎵", text: "پاپ و شاد", type: "E" },
-                { icon: "🎻", text: "کلاسیک و آرام", type: "I" },
-                { icon: "🔇", text: "سکوت! تمرکز", type: "A" },
-                { icon: "🎸", text: "هر چی انرژی بده", type: "C" }
+            { q: "موسیقی هنگام کار؟", opts: [
+                { icon: "🎵", text: "شاد", type: "E" },
+                { icon: "🎻", text: "کلاسیک", type: "I" },
+                { icon: "🔇", text: "سکوت", type: "A" },
+                { icon: "🎸", text: "انرژی‌بخش", type: "C" }
             ], vocab: { fa: "موسیقی", de: "Musik" }},
-            { question: "جمله‌ی مورد علاقه؟", options: [
-                { icon: "🌟", text: "تلاش کن موفق شوی!", type: "L" },
-                { icon: "😌", text: "آرامش مهم‌تر از پول", type: "S" },
-                { icon: "🤝", text: "با هم قوی‌تریم", type: "E" },
-                { icon: "🧠", text: "دانش قدرت است", type: "A" }
+            { q: "جمله مورد علاقه؟", opts: [
+                { icon: "🌟", text: "تلاش=موفقیت", type: "L" },
+                { icon: "😌", text: "آرامش مهم", type: "S" },
+                { icon: "🤝", text: "با هم قوی", type: "E" },
+                { icon: "🧠", text: "دانش=قدرت", type: "A" }
             ], vocab: { fa: "موفق", de: "erfolgreich" }}
         ];
 
         const personalities = {
-            L: { icon: "🦁", name: "رهبر", de: "Anführer" },
-            E: { icon: "🦋", name: "اجتماعی", de: "Teamplayer" },
-            A: { icon: "🦉", name: "تحلیل‌گر", de: "Analytiker" },
-            C: { icon: "🦚", name: "خلاق", de: "Kreative" },
-            I: { icon: "🐢", name: "متفکر", de: "Denker" },
-            S: { icon: "🐨", name: "آرام‌طلب", de: "Entspannte" }
+            L: { icon: "🦁", fa: "رهبر", de: "Anführer" },
+            E: { icon: "🦋", fa: "اجتماعی", de: "Teamplayer" },
+            A: { icon: "🦉", fa: "تحلیل‌گر", de: "Analytiker" },
+            C: { icon: "🦚", fa: "خلاق", de: "Kreative" },
+            I: { icon: "🐢", fa: "متفکر", de: "Denker" },
+            S: { icon: "🐨", fa: "آرام‌طلب", de: "Entspannte" }
         };
 
-        // State
+        // ===== STATE =====
         let db = null;
+        let gameRef = null;
         let gameCode = '';
         let isHost = false;
         let playerId = '';
-        let playerName = '';
-        let currentQuestion = 0;
-        let gameRef = null;
+        let currentQ = 0;
 
-        // Utility
-        function generateCode() {
-            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
-            let code = '';
-            for (let i = 0; i < 4; i++) {
-                code += chars[Math.floor(Math.random() * chars.length)];
-            }
-            return code;
-        }
-
-        function toPersianNum(num) {
-            const digits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
-            return num.toString().split('').map(d => digits[parseInt(d)] || d).join('');
-        }
-
-        function showScreen(id) {
+        // ===== HELPERS =====
+        function $(id) { return document.getElementById(id); }
+        function show(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
+            $(id).classList.add('active');
+        }
+        function makeCode() {
+            const c = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
+            return Array(4).fill(0).map(() => c[Math.floor(Math.random()*c.length)]).join('');
+        }
+        function toFa(n) {
+            return n.toString().split('').map(d => '۰۱۲۳۴۵۶۷۸۹'[d] || d).join('');
         }
 
-        // Initialize Firebase
+        // ===== FIREBASE INIT =====
         function initFirebase() {
+            if (typeof firebase === 'undefined') {
+                $('statusMsg').className = 'status-msg error';
+                $('statusMsg').textContent = '❌ خطا در بارگذاری';
+                return false;
+            }
             try {
-                const config = {
+                firebase.initializeApp({
                     apiKey: "AIzaSyBDChXlm34Kr7Gg0Dw458GiiwoLnWJAnxM",
                     authDomain: "lern-deutsch-arash.firebaseapp.com",
                     databaseURL: "https://lern-deutsch-arash-default-rtdb.europe-west1.firebasedatabase.app",
-                    projectId: "lern-deutsch-arash",
-                    storageBucket: "lern-deutsch-arash.firebasestorage.app",
-                    messagingSenderId: "845503292114",
-                    appId: "1:845503292114:web:f76ab5fcde1e978d00c30b"
-                };
-                firebase.initializeApp(config);
+                    projectId: "lern-deutsch-arash"
+                });
                 db = firebase.database();
-                document.getElementById('loadingMsg').textContent = '✅ آماده!';
-                setTimeout(() => {
-                    document.getElementById('loadingMsg').style.display = 'none';
-                }, 1000);
+                $('statusMsg').className = 'status-msg ready';
+                $('statusMsg').textContent = '✅ آماده!';
+                $('hostBtn').disabled = false;
+                $('playerBtn').disabled = false;
                 return true;
-            } catch (e) {
-                console.error('Firebase error:', e);
-                document.getElementById('loadingMsg').textContent = '❌ خطا در اتصال';
+            } catch(e) {
+                $('statusMsg').className = 'status-msg error';
+                $('statusMsg').textContent = '❌ ' + e.message;
                 return false;
             }
         }
 
-        // Host Functions
-        function showHostSetup() {
-            if (!db) {
-                alert('Firebase nicht verbunden!');
-                return;
-            }
+        // ===== HOST =====
+        function hostGame() {
             isHost = true;
-            gameCode = generateCode();
+            gameCode = makeCode();
             gameRef = db.ref('surveys/' + gameCode);
+            gameRef.set({ status: 'lobby', currentQ: 0, players: {}, responses: {}, ts: Date.now() });
+            $('gameCode').textContent = gameCode;
+            show('hostLobby');
             
-            gameRef.set({
-                status: 'lobby',
-                currentQuestion: 0,
-                players: {},
-                responses: {},
-                createdAt: Date.now()
-            });
-
-            document.getElementById('gameCodeDisplay').textContent = gameCode;
-            showScreen('hostLobby');
-
-            gameRef.child('players').on('value', (snap) => {
-                const players = snap.val() || {};
-                const names = Object.values(players);
-                document.getElementById('playersCount').textContent = names.length;
-                document.getElementById('playersList').innerHTML = names.map(n => 
-                    `<span class="player-chip">${n}</span>`
-                ).join('');
-                document.getElementById('startGameBtn').disabled = names.length < 1;
+            gameRef.child('players').on('value', snap => {
+                const p = snap.val() || {};
+                const names = Object.values(p);
+                $('playerCount').textContent = names.length;
+                $('playerList').innerHTML = names.map(n => `<span class="player-chip">${n}</span>`).join('');
+                $('startBtn').disabled = names.length < 1;
             });
         }
 
         function startGame() {
-            gameRef.update({ status: 'playing', currentQuestion: 0 });
-            showQuestionHost(0);
+            gameRef.update({ status: 'playing', currentQ: 0 });
+            showQ(0);
         }
 
-        function showQuestionHost(qIdx) {
-            currentQuestion = qIdx;
-            const q = questions[qIdx];
+        function showQ(idx) {
+            currentQ = idx;
+            const q = questions[idx];
+            $('hostBar').style.display = isHost ? 'flex' : 'none';
+            $('qProgress').textContent = `سؤال ${toFa(idx+1)} از ${toFa(questions.length)}`;
+            $('qText').textContent = q.q;
             
-            document.getElementById('hostControls').style.display = 'flex';
-            document.getElementById('questionProgress').textContent = 
-                `سؤال ${toPersianNum(qIdx + 1)} از ${toPersianNum(questions.length)}`;
-            document.getElementById('questionText').textContent = q.question;
-            
-            document.getElementById('optionsGrid').innerHTML = q.options.map((opt, i) => `
-                <div class="option-btn disabled">
-                    <div class="option-icon">${opt.icon}</div>
-                    <div class="option-text">${opt.text}</div>
+            $('optionsGrid').innerHTML = q.opts.map((o, i) => `
+                <div class="option-btn ${isHost ? 'disabled' : ''}" data-i="${i}">
+                    <div class="option-icon">${o.icon}</div>
+                    <div class="option-text">${o.text}</div>
                 </div>
             `).join('');
             
-            showScreen('questionScreen');
+            if (!isHost) {
+                document.querySelectorAll('.option-btn').forEach(btn => {
+                    btn.onclick = function() { selectOpt(parseInt(this.dataset.i)); };
+                });
+            }
+            
+            show('questionScreen');
+            
+            if (isHost) {
+                gameRef.child('responses/' + idx).on('value', snap => {
+                    const r = snap.val() || {};
+                    $('responseCount').textContent = toFa(Object.keys(r).length) + ' پاسخ';
+                });
+            }
+        }
 
-            gameRef.child('responses/' + qIdx).on('value', (snap) => {
-                const resp = snap.val() || {};
-                document.getElementById('responsesCount').textContent = 
-                    `${toPersianNum(Object.keys(resp).length)} پاسخ`;
+        function selectOpt(i) {
+            if (!playerId) return;
+            gameRef.child('responses/' + currentQ + '/' + playerId).set(i);
+            document.querySelectorAll('.option-btn').forEach((btn, idx) => {
+                btn.classList.add('disabled');
+                btn.onclick = null;
+                if (idx === i) btn.classList.add('selected');
             });
         }
 
-        function showQuestionStats() {
-            const q = questions[currentQuestion];
-            
-            gameRef.child('responses/' + currentQuestion).once('value', (snap) => {
-                const resp = snap.val() || {};
-                const counts = [0, 0, 0, 0];
-                Object.values(resp).forEach(r => counts[r]++);
-                const total = Object.keys(resp).length || 1;
-
-                document.getElementById('statsBars').innerHTML = q.options.map((opt, i) => {
-                    const pct = Math.round(counts[i] / total * 100);
+        function showStats() {
+            const q = questions[currentQ];
+            gameRef.child('responses/' + currentQ).once('value', snap => {
+                const r = snap.val() || {};
+                const counts = [0,0,0,0];
+                Object.values(r).forEach(v => counts[v]++);
+                const total = Object.keys(r).length || 1;
+                
+                $('statsBars').innerHTML = q.opts.map((o, i) => {
+                    const pct = Math.round(counts[i]/total*100);
                     return `
-                        <div class="stat-bar-item">
-                            <div class="stat-bar-label">
-                                <span>${opt.icon} ${opt.text}</span>
-                                <span>${toPersianNum(counts[i])} نفر</span>
+                        <div class="stat-item">
+                            <div class="stat-label">
+                                <span>${o.icon} ${o.text}</span>
+                                <span>${toFa(counts[i])} نفر</span>
                             </div>
-                            <div class="stat-bar-container">
-                                <div class="stat-bar color-${i}" style="width: ${pct}%">${pct}%</div>
+                            <div class="stat-bar-bg">
+                                <div class="stat-bar c${i}" style="width:${pct}%">${pct}%</div>
                             </div>
                         </div>
                     `;
                 }).join('');
-
-                document.getElementById('statsNextBtn').textContent = 
-                    currentQuestion < questions.length - 1 ? 'سؤال بعدی ←' : '🏆 نتایج نهایی';
-                document.getElementById('statsOverlay').classList.add('show');
+                
+                $('nextQBtn').textContent = currentQ < questions.length-1 ? 'سؤال بعدی ←' : '🏆 نتایج';
+                $('statsOverlay').classList.add('show');
             });
         }
 
-        function nextQuestion() {
-            document.getElementById('statsOverlay').classList.remove('show');
-            
-            if (currentQuestion < questions.length - 1) {
-                currentQuestion++;
-                gameRef.update({ currentQuestion: currentQuestion });
-                showQuestionHost(currentQuestion);
+        function nextQ() {
+            $('statsOverlay').classList.remove('show');
+            if (currentQ < questions.length-1) {
+                currentQ++;
+                gameRef.update({ currentQ });
+                showQ(currentQ);
             } else {
                 gameRef.update({ status: 'finished' });
-                showFinalResults();
+                showResults();
             }
         }
 
-        function showFinalResults() {
-            gameRef.child('responses').once('value', (snap) => {
-                const allResp = snap.val() || {};
-                const typeCounts = { L: 0, E: 0, A: 0, C: 0, I: 0, S: 0 };
+        function showResults() {
+            gameRef.child('responses').once('value', snap => {
+                const all = snap.val() || {};
+                const types = { L:0, E:0, A:0, C:0, I:0, S:0 };
                 
-                Object.keys(allResp).forEach(qIdx => {
-                    Object.values(allResp[qIdx]).forEach(optIdx => {
-                        const type = questions[qIdx].options[optIdx].type;
-                        typeCounts[type]++;
+                Object.keys(all).forEach(qIdx => {
+                    Object.values(all[qIdx]).forEach(optIdx => {
+                        types[questions[qIdx].opts[optIdx].type]++;
                     });
                 });
-
-                const sorted = Object.entries(typeCounts).sort((a, b) => b[1] - a[1]);
-                document.getElementById('personalityResults').innerHTML = sorted.map(([t, c]) => `
-                    <div class="personality-card">
-                        <div class="personality-icon">${personalities[t].icon}</div>
-                        <div class="personality-name">${personalities[t].name} | ${personalities[t].de}</div>
-                        <div class="personality-count">${toPersianNum(c)}</div>
+                
+                const sorted = Object.entries(types).sort((a,b) => b[1]-a[1]);
+                $('personalityGrid').innerHTML = sorted.map(([t, c]) => `
+                    <div class="personality-item">
+                        <div class="icon">${personalities[t].icon}</div>
+                        <div class="name">${personalities[t].fa} | ${personalities[t].de}</div>
+                        <div class="count">${toFa(c)}</div>
                     </div>
                 `).join('');
-
-                document.getElementById('vocabRecap').innerHTML = questions.slice(0, 10).map(q => `
-                    <div class="vocab-recap-item"><strong>${q.vocab.fa}</strong> = ${q.vocab.de}</div>
-                `).join('');
-
-                showScreen('resultsScreen');
+                
+                $('vocabGrid').innerHTML = questions.slice(0,10).map(q => 
+                    `<div class="vocab-item"><b>${q.vocab.fa}</b> = ${q.vocab.de}</div>`
+                ).join('');
+                
+                show('resultsScreen');
             });
         }
 
-        // Player Functions
-        function showJoinScreen() {
-            showScreen('joinScreen');
-            document.getElementById('code1').focus();
+        // ===== PLAYER =====
+        function joinScreen() {
+            show('joinScreen');
+            $('c1').focus();
         }
 
         function joinGame() {
-            const code = ['code1','code2','code3','code4'].map(id => 
-                document.getElementById(id).value.toUpperCase()
-            ).join('');
-            const name = document.getElementById('playerName').value.trim();
+            const code = ['c1','c2','c3','c4'].map(id => $(id).value.toUpperCase()).join('');
+            const name = $('playerName').value.trim();
             
-            if (code.length !== 4) {
-                document.getElementById('joinError').textContent = 'کد ۴ حرفی وارد کنید';
-                return;
-            }
-            if (!name) {
-                document.getElementById('joinError').textContent = 'نام خود را وارد کنید';
-                return;
-            }
-
+            if (code.length !== 4) { $('joinError').textContent = 'کد ۴ حرفی'; return; }
+            if (!name) { $('joinError').textContent = 'نام وارد کنید'; return; }
+            
             gameCode = code;
-            playerName = name;
-            playerId = 'p_' + Date.now();
+            playerId = 'p' + Date.now();
             gameRef = db.ref('surveys/' + gameCode);
-
-            gameRef.once('value', (snap) => {
-                if (!snap.exists()) {
-                    document.getElementById('joinError').textContent = 'بازی پیدا نشد!';
-                    return;
-                }
-
+            
+            gameRef.once('value', snap => {
+                if (!snap.exists()) { $('joinError').textContent = 'بازی پیدا نشد!'; return; }
+                
                 gameRef.child('players/' + playerId).set(name);
-                document.getElementById('playerNameDisplay').textContent = name;
-                showScreen('playerWaiting');
-
-                gameRef.on('value', (snap) => {
-                    const game = snap.val();
-                    if (!game) return;
-                    if (game.status === 'playing') {
-                        showQuestionPlayer(game.currentQuestion);
-                    } else if (game.status === 'finished') {
-                        showPlayerResults();
-                    }
+                $('waitingName').textContent = name;
+                show('waitingScreen');
+                
+                gameRef.on('value', snap => {
+                    const g = snap.val();
+                    if (!g) return;
+                    if (g.status === 'playing') showQ(g.currentQ);
+                    if (g.status === 'finished') showPlayerResult();
                 });
             });
         }
 
-        function showQuestionPlayer(qIdx) {
-            currentQuestion = qIdx;
-            const q = questions[qIdx];
-            
-            document.getElementById('hostControls').style.display = 'none';
-            document.getElementById('questionProgress').textContent = 
-                `سؤال ${toPersianNum(qIdx + 1)} از ${toPersianNum(questions.length)}`;
-            document.getElementById('questionText').textContent = q.question;
-            
-            gameRef.child('responses/' + qIdx + '/' + playerId).once('value', (snap) => {
-                const answered = snap.exists();
+        function showPlayerResult() {
+            gameRef.child('responses').once('value', snap => {
+                const all = snap.val() || {};
+                const types = { L:0, E:0, A:0, C:0, I:0, S:0 };
                 
-                document.getElementById('optionsGrid').innerHTML = q.options.map((opt, i) => `
-                    <div class="option-btn ${answered ? 'disabled' : ''}" data-idx="${i}">
-                        <div class="option-icon">${opt.icon}</div>
-                        <div class="option-text">${opt.text}</div>
-                    </div>
-                `).join('');
-
-                if (!answered) {
-                    document.querySelectorAll('.option-btn').forEach(btn => {
-                        btn.addEventListener('click', function() {
-                            selectOption(parseInt(this.dataset.idx));
-                        });
-                    });
-                }
-            });
-            
-            showScreen('questionScreen');
-        }
-
-        function selectOption(idx) {
-            gameRef.child('responses/' + currentQuestion + '/' + playerId).set(idx);
-            document.querySelectorAll('.option-btn').forEach((btn, i) => {
-                btn.classList.add('disabled');
-                if (i === idx) btn.classList.add('selected');
-            });
-        }
-
-        function showPlayerResults() {
-            gameRef.child('responses').once('value', (snap) => {
-                const allResp = snap.val() || {};
-                const typeCounts = { L: 0, E: 0, A: 0, C: 0, I: 0, S: 0 };
-                
-                Object.keys(allResp).forEach(qIdx => {
-                    const myAns = allResp[qIdx][playerId];
-                    if (myAns !== undefined) {
-                        typeCounts[questions[qIdx].options[myAns].type]++;
-                    }
+                Object.keys(all).forEach(qIdx => {
+                    const my = all[qIdx][playerId];
+                    if (my !== undefined) types[questions[qIdx].opts[my].type]++;
                 });
-
-                const dominant = Object.entries(typeCounts).sort((a, b) => b[1] - a[1])[0][0];
-                const p = personalities[dominant];
-
-                document.getElementById('personalityResults').innerHTML = `
-                    <div class="personality-card" style="grid-column: span 2;">
-                        <div class="personality-icon" style="font-size: 4rem;">${p.icon}</div>
-                        <div class="personality-name" style="font-size: 1.5rem;">شما: ${p.name} | ${p.de}</div>
+                
+                const best = Object.entries(types).sort((a,b) => b[1]-a[1])[0][0];
+                const p = personalities[best];
+                
+                $('personalityGrid').innerHTML = `
+                    <div class="personality-item" style="grid-column: span 2;">
+                        <div class="icon" style="font-size:3rem;">${p.icon}</div>
+                        <div class="name" style="font-size:1.3rem;">شما: ${p.fa} | ${p.de}</div>
                     </div>
                 `;
-
-                document.getElementById('vocabRecap').innerHTML = questions.slice(0, 10).map(q => `
-                    <div class="vocab-recap-item"><strong>${q.vocab.fa}</strong> = ${q.vocab.de}</div>
-                `).join('');
-
-                showScreen('resultsScreen');
+                
+                $('vocabGrid').innerHTML = questions.slice(0,10).map(q => 
+                    `<div class="vocab-item"><b>${q.vocab.fa}</b> = ${q.vocab.de}</div>`
+                ).join('');
+                
+                show('resultsScreen');
             });
         }
 
-        // Code Input Navigation
-        function setupCodeInputs() {
-            const inputs = ['code1', 'code2', 'code3', 'code4'];
-            inputs.forEach((id, i) => {
-                const el = document.getElementById(id);
-                el.addEventListener('input', function() {
-                    this.value = this.value.toUpperCase();
-                    if (this.value && i < 3) {
-                        document.getElementById(inputs[i + 1]).focus();
-                    }
-                });
-                el.addEventListener('keydown', function(e) {
-                    if (e.key === 'Backspace' && !this.value && i > 0) {
-                        document.getElementById(inputs[i - 1]).focus();
-                    }
-                });
-            });
-        }
-
-        // Event Listeners
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialize Firebase
-            initFirebase();
-            
-            // Setup code inputs
-            setupCodeInputs();
-
-            // Button handlers
-            document.getElementById('hostBtn').addEventListener('click', showHostSetup);
-            document.getElementById('playerBtn').addEventListener('click', showJoinScreen);
-            document.getElementById('backToWelcome').addEventListener('click', () => showScreen('welcomeScreen'));
-            document.getElementById('joinBtn').addEventListener('click', joinGame);
-            document.getElementById('startGameBtn').addEventListener('click', startGame);
-            document.getElementById('showStatsBtn').addEventListener('click', showQuestionStats);
-            document.getElementById('statsNextBtn').addEventListener('click', nextQuestion);
-            document.getElementById('restartBtn').addEventListener('click', () => location.reload());
+        // ===== CODE INPUTS =====
+        ['c1','c2','c3','c4'].forEach((id, i) => {
+            $(id).oninput = function() {
+                this.value = this.value.toUpperCase();
+                if (this.value && i < 3) $(['c1','c2','c3','c4'][i+1]).focus();
+            };
+            $(id).onkeydown = function(e) {
+                if (e.key === 'Backspace' && !this.value && i > 0) $(['c1','c2','c3','c4'][i-1]).focus();
+            };
         });
 
-        // Cleanup
-        window.addEventListener('beforeunload', () => {
-            if (gameRef && playerId) {
-                gameRef.child('players/' + playerId).remove();
+        // ===== EVENTS =====
+        $('hostBtn').onclick = hostGame;
+        $('playerBtn').onclick = joinScreen;
+        $('hostBack').onclick = () => show('welcomeScreen');
+        $('joinBack').onclick = () => show('welcomeScreen');
+        $('startBtn').onclick = startGame;
+        $('joinBtn').onclick = joinGame;
+        $('showStatsBtn').onclick = showStats;
+        $('nextQBtn').onclick = nextQ;
+        $('restartBtn').onclick = () => location.reload();
+
+        // ===== CLEANUP =====
+        window.onbeforeunload = () => {
+            if (gameRef && playerId) gameRef.child('players/' + playerId).remove();
+        };
+
+        // ===== INIT - Wait for Firebase =====
+        function waitForFirebase() {
+            if (typeof firebase !== 'undefined') {
+                initFirebase();
+            } else {
+                setTimeout(waitForFirebase, 100);
             }
-        });
+        }
+        
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', waitForFirebase);
+        } else {
+            waitForFirebase();
+        }
+    })();
     </script>
 </body>
 </html>
